@@ -1,31 +1,52 @@
 <template>
   <div id="app">
+    <img src="https://cdn.jsdelivr.net/gh/MobiusBeta/assets/images/BG_A_Default_1.jpg" alt="" :class="bg">
+    <div class="cover"></div>
+    <div class="time">{{hour}}:{{minute}}</div>
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <Index v-if="true" :bg="bg" v-model="bg"/>
     </div>
-    <router-view/>
   </div>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+import Index from '@/components/Index.vue'
+export default {
+  data() {
+    return {
+      hour: '',
+      minute: '',
+      bg: {
+        'bgPic': true,
+        'bgFocus': false
+      },
+      showBar: true
+    }
+  },
+  created() {
+    // 初始化时间
+    let currentSysTime = new Date();
+    this.hour = currentSysTime.getHours();
+    this.minute = (currentSysTime.getMinutes() + "").padStart(2, "0");
+    // 刷新时间
+    setInterval(()=>{
+      currentSysTime = new Date();
+      this.hour = currentSysTime.getHours();
+      this.minute = (currentSysTime.getMinutes() + "").padStart(2, "0");
+    }, 5000);
+    // 单击时间背景变灰
+    document.addEventListener('mousedown',(e) => {
+      let clzName = e.target.className
+      if(clzName.indexOf('search-btn') < 0 && clzName.indexOf('search-content') < 0  && clzName.indexOf('tips') < 0 && clzName.indexOf('goto') < 0) {
+        this.bg.bgFocus = false;
+      }
+    });
+  },
+  methods: {
+    
+  },
+  components: {
+    Index
+  }
 }
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+</script>
